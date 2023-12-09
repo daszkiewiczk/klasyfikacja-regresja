@@ -65,7 +65,30 @@ def calculate_classification_metrics(df):
     # Umieść swój kod do obliczeń macierzy pomyłek
 
     # Obliczanie trafności, czułości, swoistości, precyzji i wskaźnika F1
+    true_positives = sum((true_labels[i] == 1) and (pred_labels_model1[i] == 1) for i in range(len(true_labels)))
+    true_negatives = sum((true_labels[i] == 0) and (pred_labels_model1[i] == 0) for i in range(len(true_labels)))
+    actual_positives = sum(true_labels)
+    actual_negatives = len(true_labels) - actual_positives
+    predicted_positives = sum(pred_labels_model1)
+    f1 = 2 * true_positives / (2 * true_positives + predicted_positives + actual_positives)
+
+    true_positives_model2 = sum((true_labels[i] == 1) and (pred_labels_model2[i] == 1) for i in range(len(true_labels)))
+    true_negatives_model2 = sum((true_labels[i] == 0) and (pred_labels_model2[i] == 0) for i in range(len(true_labels)))
+    actual_positives_model2 = sum(true_labels)
+    actual_negatives_model2 = len(true_labels) - actual_positives_model2
+    predicted_positives_model2 = sum(pred_labels_model2)
+    f1_model2 = 2 * true_positives_model2 / (2 * true_positives_model2 + predicted_positives_model2 + actual_positives_model2)
+
     accuracy = np.mean(true_labels == pred_labels_model1)
+    sensitivity = true_positives / actual_positives if actual_positives != 0 else 0
+    specificity = true_negatives / actual_negatives if actual_negatives != 0 else 0
+    precision = true_positives / predicted_positives if predicted_positives != 0 else 0
+
+    accuracy_model2 = np.mean(true_labels == pred_labels_model2)
+    sensitivity_model2 = true_positives_model2 / actual_positives_model2 if actual_positives_model2 != 0 else 0
+    specificity_model2 = true_negatives_model2 / actual_negatives_model2 if actual_negatives_model2 != 0 else 0
+    precision_model2 = true_positives_model2 / predicted_positives_model2 if predicted_positives_model2 != 0 else 0
+
     # Tutaj dodaj obliczenia dla pozostałych metryk
 
     # Rysowanie krzywej ROC
@@ -81,6 +104,10 @@ def calculate_classification_metrics(df):
     plt.title('Krzywa ROC')
     plt.legend()
     plt.show()
+    sensitivity_label.config(text=f"Sensitivity: {sensitivity}")
+    specificity_label.config(text=f"Specificity: {specificity}")
+    precision_label.config(text=f"Precision: {precision}")
+    f1_score_label.config(text=f"F1 Score: {f1}")
 
     # Obliczanie AUC
     auc_model1 = auc(fpr_model1, tpr_model1)
@@ -164,5 +191,17 @@ regression_radio.pack()
 
 browse_button = tk.Button(frame, text="Wybierz plik CSV", command=choose_model)
 browse_button.pack()
+
+sensitivity_label = tk.Label(frame, text="")
+sensitivity_label.pack()
+
+specificity_label = tk.Label(frame, text="")
+specificity_label.pack()
+
+precision_label = tk.Label(frame, text="")
+precision_label.pack()
+
+f1_score_label = tk.Label(frame, text="")
+f1_score_label.pack()
 
 root.mainloop()
