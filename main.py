@@ -52,7 +52,6 @@ def calculate_classification_metrics(df):
     df['income'] = df['income'].map(d)
     df['C50_PV'] = df['C50_PV'].map(d)
     df['rf_PV'] = df['rf_PV'].map(d)
-    # Przykładowe obliczenia metryk klasyfikacyjnych
     true_labels = df.iloc[:, 0]
     pred_labels_model1 = df.iloc[:, 1]
     pred_prob_model1 = df.iloc[:, 2]
@@ -66,8 +65,6 @@ def calculate_classification_metrics(df):
 
     confusion_matrix_str = f"Confusion Matrix:\n{tp}  {fn}\n{fp}  {tn}"
 
-    # Tworzenie macierzy pomyłek (confusion matrix)
-    # Umieść swój kod do obliczeń macierzy pomyłek
 
     # Obliczanie trafności, czułości, swoistości, precyzji i wskaźnika F1
     true_positives = sum((true_labels[i] == 1) and (pred_labels_model1[i] == 1) for i in range(len(true_labels)))
@@ -94,7 +91,6 @@ def calculate_classification_metrics(df):
     specificity_model2 = true_negatives_model2 / actual_negatives_model2 if actual_negatives_model2 != 0 else 0
     precision_model2 = true_positives_model2 / predicted_positives_model2 if predicted_positives_model2 != 0 else 0
 
-    # Tutaj dodaj obliczenia dla pozostałych metryk
 
     # Rysowanie krzywej ROC
     fpr_model1, tpr_model1, _ = roc_curve(true_labels, pred_prob_model1)
