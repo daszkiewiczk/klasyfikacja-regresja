@@ -48,18 +48,23 @@ def roc_curve(true_labels, pred_probs):
 
 
 def calculate_classification_metrics(df):
-    d = {'<=50K': True, '>50K': False}
-    print('dgasdg', df['income'])
+    d = {'<=50K': False, '>50K': True}
     df['income'] = df['income'].map(d)
     df['C50_PV'] = df['C50_PV'].map(d)
     df['rf_PV'] = df['rf_PV'].map(d)
-    print(df)
     # Przykładowe obliczenia metryk klasyfikacyjnych
     true_labels = df.iloc[:, 0]
     pred_labels_model1 = df.iloc[:, 1]
     pred_prob_model1 = df.iloc[:, 2]
     pred_labels_model2 = df.iloc[:, 3]
     pred_prob_model2 = df.iloc[:, 4]
+
+    tp = sum((true == 1) and (pred == 1) for true, pred in zip(true_labels, pred_labels_model1))
+    tn = sum((true == 0) and (pred == 0) for true, pred in zip(true_labels, pred_labels_model1))
+    fp = sum((true == 0) and (pred == 1) for true, pred in zip(true_labels, pred_labels_model1))
+    fn = sum((true == 1) and (pred == 0) for true, pred in zip(true_labels, pred_labels_model1))
+
+    confusion_matrix_str = f"Confusion Matrix:\n{tp}  {fn}\n{fp}  {tn}"
 
     # Tworzenie macierzy pomyłek (confusion matrix)
     # Umieść swój kod do obliczeń macierzy pomyłek
@@ -92,7 +97,6 @@ def calculate_classification_metrics(df):
     # Tutaj dodaj obliczenia dla pozostałych metryk
 
     # Rysowanie krzywej ROC
-    print(true_labels)
     fpr_model1, tpr_model1, _ = roc_curve(true_labels, pred_prob_model1)
     fpr_model2, tpr_model2, _ = roc_curve(true_labels, pred_prob_model2)
 
@@ -104,10 +108,15 @@ def calculate_classification_metrics(df):
     plt.title('Krzywa ROC')
     plt.legend()
     plt.show()
-    sensitivity_label.config(text=f"Sensitivity: {sensitivity}")
-    specificity_label.config(text=f"Specificity: {specificity}")
-    precision_label.config(text=f"Precision: {precision}")
-    f1_score_label.config(text=f"F1 Score: {f1}")
+    sensitivity_label.config(text=f"Sensitivity model 1: {sensitivity}")
+    specificity_label.config(text=f"Specificity model 1: {specificity}")
+    precision_label.config(text=f"Precision model 1: {precision}")
+    f1_score_label.config(text=f"F1 Score model 1: {f1}")
+    sensitivity_label_2.config(text=f"Sensitivity model 2: {sensitivity_model2}")
+    specificity_label_2.config(text=f"Specificity model 2: {specificity_model2}")
+    precision_label_2.config(text=f"Precision model 2: {precision_model2}")
+    f1_score_label_2.config(text=f"F1 Score model 2: {f1_model2}")
+
 
     # Obliczanie AUC
     auc_model1 = auc(fpr_model1, tpr_model1)
@@ -203,5 +212,17 @@ precision_label.pack()
 
 f1_score_label = tk.Label(frame, text="")
 f1_score_label.pack()
+
+sensitivity_label_2 = tk.Label(frame, text="")
+sensitivity_label_2.pack()
+
+specificity_label_2 = tk.Label(frame, text="")
+specificity_label_2.pack()
+
+precision_label_2 = tk.Label(frame, text="")
+precision_label_2.pack()
+
+f1_score_label_2 = tk.Label(frame, text="")
+f1_score_label_2.pack()
 
 root.mainloop()
